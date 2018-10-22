@@ -31,6 +31,7 @@ One producer which reads the data from a file and send it throug the network to 
     <img src="https://mntw.github.io/multipoint-sender/demo-chain.svg">
 </p>
 
+## Three receivers multipoint
 One producer which sends data to many consumers. Consumer could be another multisend process or nc as in the demo.
 <p align="center">
     <img src="https://mntw.github.io/multipoint-sender/demo-multipoint.svg">
