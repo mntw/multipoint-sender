@@ -27,6 +27,7 @@ possible actions (at least one is required):
 
 ## Four-step chain
 One producer which reads the data from a file and send it throug the network to another hosts in a chain manner. Relay host get the packet, write it on the disk and forward it to the second host.  
+```
 <p align="center">
     <img src="https://mntw.github.io/multipoint-sender/demo-chain.svg">
 </p>
@@ -36,3 +37,4 @@ One producer which sends data to many consumers. Consumer could be another multi
 <p align="center">
     <img src="https://mntw.github.io/multipoint-sender/demo-multipoint.svg">
 </p>
+```        
