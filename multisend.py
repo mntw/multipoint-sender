@@ -5,6 +5,12 @@ from socket import socket, AF_INET, SOCK_STREAM, SO_REUSEADDR, SOL_SOCKET
 #from io import IOBase # Python3 object for isinstance(fd, IOBase)
 import argparse, time, tqdm
 
+import grpc
+import multisend_pb2 as pb2
+import multisend_pb2_grpc as pb2_grpc
+from concurrent import futures
+import subprocess
+
 parser = argparse.ArgumentParser(description='Simple multipoint transmission.', prog='smt')
 
 source_group = parser.add_mutually_exclusive_group(required=True)
@@ -21,6 +27,8 @@ parser.add_argument('-p', '--port', help='Port address to receive data from remo
 parser.add_argument('-fs', '--filesize', help='Size of transmitted data', metavar="MB", type=int, default=0)
 parser.add_argument('-st', '--statistics', help='Show statistics and progress', action='store_true')
 
+parser.add_argument('--grpc', help='Take parameters from remote grpc connection. All cli parameters will be ignored. This options takes port number as input.', type=int, default=0, metavar='PORT')
+
 
 if len(argv) == 1:
     parser.print_help()
@@ -28,8 +36,12 @@ if len(argv) == 1:
     
 args = parser.parse_args()
 
+
+
+
 if not args.dfile and not args.hosts:
      parser.error ('Either --hosts or --dfile is required.')
+
 
 def host_parser(ahosts):
     if not ahosts: return []
@@ -92,32 +104,64 @@ class Source():
     def close(self):
         self.socket.close() if self.isSocket else self.fd.close()
 
+def main(args):
+    addrs = host_parser(args.hosts)
+    source = Source(isSocket=args.server, port=args.port, filename=args.sfile).create()
+    sockets = [create_socket(ip, port) for ip,port in addrs]
 
-addrs = host_parser(args.hosts)
-source = Source(isSocket=args.server, port=args.port, filename=args.sfile).create()
-sockets = [create_socket(ip, port) for ip,port in addrs]
+    if args.dfile:
+        fd_write = open(args.dfile, 'wb')
+        sockets.append(fd_write)
 
-if args.dfile:
-    fd_write = open(args.dfile, 'wb')
-    sockets.append(fd_write)
+    pool = ThreadPool(processes = len(sockets))
 
-pool = ThreadPool(processes = len(sockets))
+    if (args.filesize and args.statistics):
+        pbar = tqdm.tqdm(total = args.filesize * 1e3 * 1024, leave=False, unit='B', unit_scale=1, dynamic_ncols=True, ascii=0)
 
-if (args.filesize and args.statistics):
-    pbar = tqdm.tqdm(total = args.filesize * 1e3 * 1024, leave=False, unit='B', unit_scale=1, dynamic_ncols=True, ascii=0)
+    t1 = time.time() if args.statistics else 0
+    while source.getData():
+        length = source.Read(args.mss)
+        results = pool.map(lambda x : send(x, source.getData()), sockets)
+        pbar.update(length) if (args.filesize and args.statistics) else None
 
-t1 = time.time() if args.statistics else 0
-while source.getData():
-    length = source.Read(args.mss)
-    results = pool.map(lambda x : send(x, source.getData()), sockets)
-    pbar.update(length) if (args.filesize and args.statistics) else None
+    t2 = time.time() if args.statistics else 0
 
-t2 = time.time() if args.statistics else 0
+    pool.close()
+    pool.join()
+    destroy_sockets(sockets)
+    source.close()
+    if args.statistics:
+        print '\nAmount of transmitted data: %d MB' % (source.received_size / 1e3 / 1024) 
+        print 'Average datarate: %f Mbps' % (source.received_size * 8.0 / 1e3 /  1024 / (t2-t1))
 
-pool.close()
-pool.join()
-destroy_sockets(sockets)
-source.close()
-if args.statistics:
-    print '\nAmount of transmitted data: %d MB' % (source.received_size / 1e3 / 1024) 
-    print 'Average datarate: %f Mbps' % (source.received_size * 8.0 / 1e3 /  1024 / (t2-t1))
+
+
+class ApiServicer(pb2_grpc.ApiServicer):
+    def StartSender(self, request, context):
+        args.server = request.socket
+        args.port = int(request.sndr_address.split(':')[-1])
+        args.hosts = request.list
+        print(args.server)
+        print(args.port)
+        print(args.hosts)
+        main(args)
+        return pb2.Status(ok=True)
+
+def Serve(port):
+    print('server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))')
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    print('pb2_grpc.add_ApiServicer_to_server(ApiServicer(), server)')
+    pb2_grpc.add_ApiServicer_to_server(ApiServicer(), server)
+    print('server.add_insecure_port(\'[::]:%d\')' % port)
+    server.add_insecure_port('[::]:%d' % port)
+    print('server.start()')
+    server.start()
+    try:
+        while True: time.sleep(5)
+    except KeyboardInterrupt:
+        server.stop(0)
+
+if args.grpc:
+    Serve(args.grpc)
+else:
+    main(args)
