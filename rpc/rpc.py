@@ -1,6 +1,7 @@
 import grpc
 import multisend_pb2 as pb2
 import multisend_pb2_grpc as pb2_grpc
+from multiprocessing.dummy import Pool as ThreadPool
 
 class Client():
     def __init__ (self, grpcIP, grpcPort, params):
@@ -13,14 +14,48 @@ class Client():
         print (res)
     def Shutdown(self):
         res = self.stub.Shutdown(pb2.Void())
-    def close():
+    def close(self):
         self.channel.close()
 
 msg = {
-        'socket' : True,
-        'sndr_address' : 'localhost:505050',
-        'list' : ['localhost:1','localhost:2','localhost:3','localhost:4','localhost:5'],
+        'socket' : False,
+        'sndr_address' : 'localhost:8880',
+        'list' : ['localhost:8881', 'localhost:8882', 'localhost:8883'],
         }
+msgs = [msg] * 4
+msgs[0]['list'] = ['localhost:8881']
+msgs[1] = {
+        'socket' : True,
+        'sndr_address' : 'localhost:8881',
+        'list' : ['localhost:8882'],
+}
+msgs[2] = {
+        'socket' : True,
+        'sndr_address' : 'localhost:8882',
+        'list' : ['localhost:8883'],
+}
+msgs[3] = {
+        'socket' : True,
+        'sndr_address' : 'localhost:8883',
+        'list' : [],
+}
 
-obj = Client('localhost', 50051, msg)
-obj.StartSender()
+#obj = Client('localhost', 50051, msg)
+#obj.StartSender()
+
+objs = [
+    Client('localhost', 50052, msgs[1]),
+    Client('localhost', 50053, msgs[2]),
+    Client('localhost', 50054, msgs[3]),
+    Client('localhost', 50051, msgs[0])
+]
+
+
+
+pool = ThreadPool(processes = len(objs))
+results = pool.map(lambda x : x.StartSender(), objs)
+pool.close()
+pool.join()
+
+map(lambda x : x.close(), objs)
+

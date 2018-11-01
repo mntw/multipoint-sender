@@ -1,10 +1,10 @@
 #!/usr/bin/python2.7
 from multiprocessing.dummy import Pool as ThreadPool
-from sys import stdin, exit, argv
+from sys import stdin, exit, argv, path
 from socket import socket, AF_INET, SOCK_STREAM, SO_REUSEADDR, SOL_SOCKET
 #from io import IOBase # Python3 object for isinstance(fd, IOBase)
 import argparse, time, tqdm
-
+path.insert(0, 'rpc')
 import grpc
 import multisend_pb2 as pb2
 import multisend_pb2_grpc as pb2_grpc
@@ -126,6 +126,7 @@ def main(args):
 
     t2 = time.time() if args.statistics else 0
 
+    pbar.close() if (args.filesize and args.statistics) else None
     pool.close()
     pool.join()
     destroy_sockets(sockets)
@@ -148,16 +149,13 @@ class ApiServicer(pb2_grpc.ApiServicer):
         return pb2.Status(ok=True)
 
 def Serve(port):
-    print('server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))')
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    print('pb2_grpc.add_ApiServicer_to_server(ApiServicer(), server)')
     pb2_grpc.add_ApiServicer_to_server(ApiServicer(), server)
-    print('server.add_insecure_port(\'[::]:%d\')' % port)
+    print('GRPC listening on %d' % port)
     server.add_insecure_port('[::]:%d' % port)
-    print('server.start()')
     server.start()
     try:
-        while True: time.sleep(5)
+        while True: time.sleep(30)
     except KeyboardInterrupt:
         server.stop(0)
 
