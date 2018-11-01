@@ -37,10 +37,13 @@ message ReceiverList { repeated Parameters receivers = 2; }
 
 message Parameters {
     int32 id = 1;
+    bool socket = 2;
     uint64 buffer_size = 5;
     int32 port = 13;
     string bind_address = 21;
     string rcvr_address = 22;
+    string sndr_address = 23;
+    repeated string list = 24;
     Ssh ssh = 25;
     AppOpts args = 26;
 }

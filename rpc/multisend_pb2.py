@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='multisend.proto',
   package='proto',
   syntax='proto3',
-  serialized_pb=_b('\n\x0fmultisend.proto\x12\x05proto\"\'\n\x04Path\x12\x0c\n\x04path\x18\x01 \x01(\t\x12\x11\n\trecursive\x18\x02 \x01(\x08\"t\n\x06Status\x12\n\n\x02id\x18\x05 \x01(\x05\x12\n\n\x02ok\x18\x01 \x01(\x08\x12\x14\n\x0c\x62ind_address\x18\x02 \x01(\t\x12\x11\n\tbind_port\x18\x04 \x01(\x05\x12\x15\n\rerror_message\x18\x03 \x01(\t\x12\x12\n\nextra_info\x18\x08 \x01(\t\"f\n\rReceiverReply\x12\x0f\n\x07peer_id\x18\x01 \x01(\x05\x12\x14\n\x0c\x62ind_address\x18\x02 \x01(\t\x12\x11\n\tbind_port\x18\x03 \x01(\x05\x12\x1b\n\x05\x65rror\x18\x08 \x01(\x0b\x32\x0c.proto.Error\")\n\x05\x45rror\x12\x0f\n\x07peer_id\x18\x01 \x01(\x05\x12\x0f\n\x07message\x18\x02 \x01(\t\"4\n\x0cReceiverList\x12$\n\treceivers\x18\x02 \x03(\x0b\x32\x11.proto.Parameters\"\x9e\x01\n\nParameters\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x13\n\x0b\x62uffer_size\x18\x05 \x01(\x04\x12\x0c\n\x04port\x18\r \x01(\x05\x12\x14\n\x0c\x62ind_address\x18\x15 \x01(\t\x12\x14\n\x0crcvr_address\x18\x16 \x01(\t\x12\x17\n\x03ssh\x18\x19 \x01(\x0b\x32\n.proto.Ssh\x12\x1c\n\x04\x61rgs\x18\x1a \x01(\x0b\x32\x0e.proto.AppOpts\"<\n\x03Ssh\x12\x0c\n\x04host\x18\x01 \x01(\t\x12\x0c\n\x04user\x18\x02 \x01(\t\x12\x0b\n\x03pwd\x18\x03 \x01(\t\x12\x0c\n\x04port\x18\x04 \x01(\x05\"F\n\x07\x41ppOpts\x12\x0c\n\x04port\x18\x01 \x01(\r\x12\x0f\n\x07\x61\x64\x64ress\x18\x04 \x01(\t\x12\x10\n\x08\x62in_path\x18\x06 \x01(\t\x12\n\n\x02\x64\x66\x18\x07 \x01(\t\"\x06\n\x04Void2\xcb\x01\n\x03\x41pi\x12\x31\n\x0bStartSender\x12\x11.proto.Parameters\x1a\r.proto.Status\"\x00\x12*\n\x08SendFile\x12\x0b.proto.Path\x1a\r.proto.Status\"\x00\x30\x01\x12=\n\x0c\x41\x64\x64Receivers\x12\x13.proto.ReceiverList\x1a\x14.proto.ReceiverReply\"\x00\x30\x01\x12&\n\x08Shutdown\x12\x0b.proto.Void\x1a\x0b.proto.Void\"\x00\x62\x06proto3')
+  serialized_pb=_b('\n\x0fmultisend.proto\x12\x05proto\"\'\n\x04Path\x12\x0c\n\x04path\x18\x01 \x01(\t\x12\x11\n\trecursive\x18\x02 \x01(\x08\"t\n\x06Status\x12\n\n\x02id\x18\x05 \x01(\x05\x12\n\n\x02ok\x18\x01 \x01(\x08\x12\x14\n\x0c\x62ind_address\x18\x02 \x01(\t\x12\x11\n\tbind_port\x18\x04 \x01(\x05\x12\x15\n\rerror_message\x18\x03 \x01(\t\x12\x12\n\nextra_info\x18\x08 \x01(\t\"f\n\rReceiverReply\x12\x0f\n\x07peer_id\x18\x01 \x01(\x05\x12\x14\n\x0c\x62ind_address\x18\x02 \x01(\t\x12\x11\n\tbind_port\x18\x03 \x01(\x05\x12\x1b\n\x05\x65rror\x18\x08 \x01(\x0b\x32\x0c.proto.Error\")\n\x05\x45rror\x12\x0f\n\x07peer_id\x18\x01 \x01(\x05\x12\x0f\n\x07message\x18\x02 \x01(\t\"4\n\x0cReceiverList\x12$\n\treceivers\x18\x02 \x03(\x0b\x32\x11.proto.Parameters\"\xd2\x01\n\nParameters\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x0e\n\x06socket\x18\x02 \x01(\x08\x12\x13\n\x0b\x62uffer_size\x18\x05 \x01(\x04\x12\x0c\n\x04port\x18\r \x01(\x05\x12\x14\n\x0c\x62ind_address\x18\x15 \x01(\t\x12\x14\n\x0crcvr_address\x18\x16 \x01(\t\x12\x14\n\x0csndr_address\x18\x17 \x01(\t\x12\x0c\n\x04list\x18\x18 \x03(\t\x12\x17\n\x03ssh\x18\x19 \x01(\x0b\x32\n.proto.Ssh\x12\x1c\n\x04\x61rgs\x18\x1a \x01(\x0b\x32\x0e.proto.AppOpts\"<\n\x03Ssh\x12\x0c\n\x04host\x18\x01 \x01(\t\x12\x0c\n\x04user\x18\x02 \x01(\t\x12\x0b\n\x03pwd\x18\x03 \x01(\t\x12\x0c\n\x04port\x18\x04 \x01(\x05\"F\n\x07\x41ppOpts\x12\x0c\n\x04port\x18\x01 \x01(\r\x12\x0f\n\x07\x61\x64\x64ress\x18\x04 \x01(\t\x12\x10\n\x08\x62in_path\x18\x06 \x01(\t\x12\n\n\x02\x64\x66\x18\x07 \x01(\t\"\x06\n\x04Void2\xcb\x01\n\x03\x41pi\x12\x31\n\x0bStartSender\x12\x11.proto.Parameters\x1a\r.proto.Status\"\x00\x12*\n\x08SendFile\x12\x0b.proto.Path\x1a\r.proto.Status\"\x00\x30\x01\x12=\n\x0c\x41\x64\x64Receivers\x12\x13.proto.ReceiverList\x1a\x14.proto.ReceiverReply\"\x00\x30\x01\x12&\n\x08Shutdown\x12\x0b.proto.Void\x1a\x0b.proto.Void\"\x00\x62\x06proto3')
 )
 
 
@@ -265,42 +265,63 @@ _PARAMETERS = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='buffer_size', full_name='proto.Parameters.buffer_size', index=1,
+      name='socket', full_name='proto.Parameters.socket', index=1,
+      number=2, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='buffer_size', full_name='proto.Parameters.buffer_size', index=2,
       number=5, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='port', full_name='proto.Parameters.port', index=2,
+      name='port', full_name='proto.Parameters.port', index=3,
       number=13, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='bind_address', full_name='proto.Parameters.bind_address', index=3,
+      name='bind_address', full_name='proto.Parameters.bind_address', index=4,
       number=21, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='rcvr_address', full_name='proto.Parameters.rcvr_address', index=4,
+      name='rcvr_address', full_name='proto.Parameters.rcvr_address', index=5,
       number=22, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='ssh', full_name='proto.Parameters.ssh', index=5,
+      name='sndr_address', full_name='proto.Parameters.sndr_address', index=6,
+      number=23, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='list', full_name='proto.Parameters.list', index=7,
+      number=24, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='ssh', full_name='proto.Parameters.ssh', index=8,
       number=25, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='args', full_name='proto.Parameters.args', index=6,
+      name='args', full_name='proto.Parameters.args', index=9,
       number=26, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -319,7 +340,7 @@ _PARAMETERS = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=387,
-  serialized_end=545,
+  serialized_end=597,
 )
 
 
@@ -370,8 +391,8 @@ _SSH = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=547,
-  serialized_end=607,
+  serialized_start=599,
+  serialized_end=659,
 )
 
 
@@ -422,8 +443,8 @@ _APPOPTS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=609,
-  serialized_end=679,
+  serialized_start=661,
+  serialized_end=731,
 )
 
 
@@ -446,8 +467,8 @@ _VOID = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=681,
-  serialized_end=687,
+  serialized_start=733,
+  serialized_end=739,
 )
 
 _RECEIVERREPLY.fields_by_name['error'].message_type = _ERROR
@@ -536,8 +557,8 @@ _API = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   options=None,
-  serialized_start=690,
-  serialized_end=893,
+  serialized_start=742,
+  serialized_end=945,
   methods=[
   _descriptor.MethodDescriptor(
     name='StartSender',
