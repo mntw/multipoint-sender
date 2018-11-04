@@ -3,6 +3,7 @@
 ```
 usage: smt [-h] (-sf FILE NAME | -stdi | -s) [-df FILE NAME]
            [-H IP:PORT [IP:PORT ...]] [-m MSS] [-p PORT] [-fs MB] [-st]
+           [--grpc PORT]
 
 Simple multipoint transmission.
 
@@ -17,6 +18,9 @@ optional arguments:
   -fs MB, --filesize MB
                         Size of transmitted data
   -st, --statistics     Show statistics and progress
+  --grpc PORT           Take parameters from remote grpc connection. All cli
+                        parameters will be ignored. This options takes port
+                        number as input.
 
 possible actions (at least one is required):
   -df FILE NAME, --dfile FILE NAME
