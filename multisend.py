@@ -3,8 +3,8 @@ from multiprocessing.dummy import Pool as ThreadPool
 from sys import stdin, exit, argv, path
 from socket import socket, AF_INET, SOCK_STREAM, SO_REUSEADDR, SOL_SOCKET
 #from io import IOBase # Python3 object for isinstance(fd, IOBase)
-import argparse, time, tqdm
-path.insert(0, 'rpc')
+import argparse, time
+import tqdm
 import grpc
 import multisend_pb2 as pb2
 import multisend_pb2_grpc as pb2_grpc
@@ -44,16 +44,19 @@ if not args.dfile and not args.hosts:
 
 
 def host_parser(ahosts):
-    if not ahosts: return []
+    if not ahosts:
+        return []
     try:
-	return [(ip, int(port)) for ip, port in [i.split(':') for i in ahosts]]
+        return [(ip, int(port)) for ip, port in [i.split(':') for i in ahosts]]
     except Exception as e:
-	print e, '\nWrong input hosts format.'
-	exit(0)
+        print(e, '\nWrong input hosts format.')
+        exit(0)
 
 def create_socket(ip, port):
     sock = socket(AF_INET, SOCK_STREAM)
+    sock.settimeout(30)
     sock.connect((ip, port))
+    sock.settimeout(None)
     return sock
 
 def destroy_sockets(sockets):
@@ -63,25 +66,25 @@ def send(sock, data):
     if isinstance(sock, socket):
         sock.send(data)
     elif isinstance(sock, file):
-	sock.write(data)
+        sock.write(data)
 
 class Source():
     def __init__(self, isSocket = False, port=None, filename = None):
         self.port = port
-	self.isSocket = isSocket 
-	self.socket = None
-	self.filename = filename
-	self.fd = None
-	self.data = True
+        self.isSocket = isSocket 
+        self.socket = None
+        self.filename = filename
+        self.fd = None
+        self.data = True
         self.received_size = 0
     def accept_connection(self):
-	sock = socket(AF_INET, SOCK_STREAM)
-	sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-	sock.bind(('0.0.0.0', self.port))
-	sock.listen(1)
-	conn, addr = sock.accept()
-	sock.close()
-	return conn 
+        sock = socket(AF_INET, SOCK_STREAM)
+        sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+        sock.bind(('0.0.0.0', self.port))
+        sock.listen(1)
+        conn, addr = sock.accept()
+        sock.close()
+        return conn 
     def file_open(self, name):
         try:
             return open(name, 'rb') if name else stdin
@@ -92,15 +95,15 @@ class Source():
         if self.isSocket:
             self.socket = self.accept_connection()
         else:
-	    self.fd = self.file_open(self.filename) 
-	return self
+            self.fd = self.file_open(self.filename) 
+        return self
     def Read(self, size):
         self.data = self.socket.recv(size) if self.isSocket else self.fd.read(size)
         ldata = len(self.data)
         self.received_size += ldata
         return ldata
     def getData(self):
-	return self.data
+        return self.data
     def close(self):
         self.socket.close() if self.isSocket else self.fd.close()
 
@@ -116,7 +119,7 @@ def main(args):
     pool = ThreadPool(processes = len(sockets))
 
     if (args.filesize and args.statistics):
-        pbar = tqdm.tqdm(total = args.filesize * 1e3 * 1024, leave=False, unit='B', unit_scale=1, dynamic_ncols=True, ascii=0)
+        pbar = tqdm.tqdm(total = args.filesize * 1e3 * 1024, leave=False, unit='B', unit_scale=1, dynamic_ncols=True, ascii=1)
 
     t1 = time.time() if args.statistics else 0
     while source.getData():
@@ -132,8 +135,8 @@ def main(args):
     destroy_sockets(sockets)
     source.close()
     if args.statistics:
-        print '\nAmount of transmitted data: %d MB' % (source.received_size / 1e3 / 1024) 
-        print 'Average datarate: %f Mbps' % (source.received_size * 8.0 / 1e3 /  1024 / (t2-t1))
+        print('\nAmount of transmitted data: %d MB' % (source.received_size / 1e3 / 1024) )
+        print('Average datarate: %f Mbps' % (source.received_size * 8.0 / 1e3 /  1024 / (t2-t1)))
 
 
 
